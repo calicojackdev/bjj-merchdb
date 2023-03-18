@@ -1,0 +1,5 @@
+__pycache__
+local_server/
+logs/
+data/
+todo.txt

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<head>
+    <link rel="icon" href="https://calicojackdev.github.io/bjj-merchdb/calico_flag.jpg">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BJJ MerchDB</title>
+    <style>
+        body,
+        a {
+            color: white;
+        }
+
+        body {
+            background-color: black;
+            font-family: 'Open Sans';
+        }
+
+        a {
+            text-decoration: none;   
+        }
+
+        a:hover {
+            color: lawngreen;
+            opacity: .8;
+        }
+
+        table {
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        th, td {
+            padding: .5%;
+            overflow: hidden;
+        }
+
+        .brand-name {
+            width: 20%;
+        }
+
+        .detail-grid {
+            width: 10%;
+        }
+
+        #header-title {
+            text-align: center;
+        }
+        
+        #footer {
+            padding: 5%;
+            text-align: center;
+        }
+
+        #footer > a:not(:last-child)::after {
+            content: " /";
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        <h1 id="header-title">BJJ MerchDB &#129355;</h1>
+    </div>
+    <div id="content-container"></div>
+    <div id="footer">
+        <a href="https://calicojackdev.github.io/bjj-merchdb/form.html">Feedback Form</a>
+        <a href="mailto:calicojackdev@gmail.com" target="_blank">Email</a>
+        <a href="https://github.com/calicojackdev/bjj-merchdb" target="_blank">Github</a>
+        <a href="https://calicojackdev.github.io/bjj-merchdb/data.json" target="_blank">Raw Data</a>
+    </div>
+    <script>
+        function buildTableHeaders(table) {
+            const headers = ["Brand", "Gis", "Rashguards", "Shorts", "Belts"];
+            var row = document.createElement('tr');
+
+            for (header in headers) {
+                var head = document.createElement('th');
+                head.textContent = headers[header];
+                row.appendChild(head);
+            }
+            table.appendChild(row);
+        }
+
+        function buildTable(data) {
+            var container = document.getElementById("content-container");
+            var table = document.createElement('table');
+
+            buildTableHeaders(table);
+
+            for (d in data) {
+                var row = document.createElement('tr');
+
+                var name = document.createElement('td');
+                var brandLink = document.createElement('a');
+                name.setAttribute("class", "brand-name");
+                brandLink.setAttribute("href", data[d]["brand_url"]);
+                brandLink.setAttribute("target", "_blank");
+                brandLink.innerHTML = d;
+                name.appendChild(brandLink);
+                row.append(name);
+
+                const cols = ["gi_url", "rashguard_url", "shorts_url", "belt_url"];
+                for (col in cols) {
+                    var link = document.createElement('a');
+                    var detail = document.createElement('td');
+                    detail.setAttribute("class", "detail-grid");
+                    if (data[d][cols[col]]) {
+                        link.setAttribute("href", data[d][cols[col]]);
+                        link.setAttribute("target", "_blank");
+                        link.innerHTML = "&#9989;";
+                    }
+                    detail.appendChild(link);
+                    row.appendChild(detail);
+                }
+                table.appendChild(row);
+            }
+            container.appendChild(table);
+        }
+
+        function fetchData() {
+            const response = fetch(
+                "https://calicojackdev.github.io/bjj-merchdb/data.json",
+                { mode: "cors" }
+            ).then((response) => response.json()
+            ).then((data) => buildTable(data));
+            return response;
+        }
+
+        fetchData();
+    </script>
+</body>
